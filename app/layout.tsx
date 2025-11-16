@@ -1,11 +1,19 @@
 import "./global.css";
+import { BoxIcon } from "lucide-react";
 import { Navbar } from "@/components/geistdocs/navbar";
 import { GeistdocsProvider } from "@/components/geistdocs/provider";
 import { mono, sans } from "@/lib/geistdocs/fonts";
 import { cn } from "@/lib/utils";
 
 const Logo = () => (
-  <span className="font-semibold text-xl tracking-tight">components.build</span>
+  <>
+    <span className="hidden font-semibold text-xl tracking-tight sm:block">
+      components.build
+    </span>
+    <span className="font-semibold text-xl tracking-tight sm:hidden">
+      <BoxIcon className="size-5" />
+    </span>
+  </>
 );
 
 const links: { label: string; href: string }[] = [];
