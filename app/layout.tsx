@@ -5,7 +5,7 @@ import { mono, sans } from "@/lib/geistdocs/fonts";
 import { cn } from "@/lib/utils";
 
 const Logo = () => (
-  <p className="font-medium text-lg tracking-tight">components.build</p>
+  <span className="font-semibold text-xl tracking-tight">components.build</span>
 );
 
 const links: { label: string; href: string }[] = [];
