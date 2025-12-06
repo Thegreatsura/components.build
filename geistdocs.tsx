@@ -12,8 +12,8 @@ export const Logo = () => (
 );
 
 export const github = {
-  owner: undefined as string | undefined,
-  repo: undefined as string | undefined,
+  owner: "vercel",
+  repo: "components.build",
 };
 
 export const nav: { label: string; href: string }[] = [];
