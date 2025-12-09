@@ -1,4 +1,7 @@
 import { BoxIcon } from "lucide-react";
+import type { MDXComponents } from "mdx/types";
+import { Author } from "./components/author";
+import { AuthorNote } from "./components/author-note";
 
 export const Logo = () => (
   <>
@@ -92,4 +95,10 @@ export const translations = {
   jp: {
     displayName: "Japanese",
   },
+};
+
+export const components: MDXComponents = {
+  // Add your custom components here
+  Author,
+  AuthorNote,
 };
