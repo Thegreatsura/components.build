@@ -16,6 +16,8 @@ import { OpenInChat } from "@/components/geistdocs/open-in-chat";
 import { ScrollTop } from "@/components/geistdocs/scroll-top";
 import { Separator } from "@/components/ui/separator";
 import { getLLMText, getPageImage, source } from "@/lib/geistdocs/source";
+import { Author } from "@/components/author";
+import { AuthorNote } from "@/components/author-note";
 
 const Page = async ({ params }: PageProps<"/[lang]/[[...slug]]">) => {
   const { slug, lang } = await params;
@@ -53,6 +55,10 @@ const Page = async ({ params }: PageProps<"/[lang]/[[...slug]]">) => {
         <MDX
           components={getMDXComponents({
             a: createRelativeLink(source, page),
+
+            // Add your custom components here
+            Author,
+            AuthorNote,
           })}
         />
       </DocsBody>
