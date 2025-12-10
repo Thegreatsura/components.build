@@ -93,3 +93,5 @@ export const translations = {
     displayName: "Japanese",
   },
 };
+
+export const basePath: string | undefined = undefined;
