@@ -12,6 +12,12 @@ import { toast } from "sonner";
 import { defaultRehypePlugins } from "streamdown";
 import type { MyUIMessage } from "@/app/api/chat/types";
 import {
+  Attachment,
+  AttachmentPreview,
+  AttachmentRemove,
+  Attachments,
+} from "@/components/ai-elements/attachments";
+import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
@@ -23,14 +29,14 @@ import {
 } from "@/components/ai-elements/message";
 import {
   PromptInput,
-  PromptInputAttachment,
-  PromptInputAttachments,
   PromptInputBody,
   PromptInputFooter,
+  PromptInputHeader,
   type PromptInputProps,
   PromptInputProvider,
   PromptInputSubmit,
   PromptInputTextarea,
+  usePromptInputAttachments,
 } from "@/components/ai-elements/prompt-input";
 import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import { Button } from "@/components/ui/button";
@@ -137,6 +143,29 @@ export const useChatPersistence = () => {
     saveMessages,
     clearMessages,
   };
+};
+
+const PromptInputAttachmentsDisplay = () => {
+  const attachments = usePromptInputAttachments();
+
+  if (attachments.files.length === 0) {
+    return null;
+  }
+
+  return (
+    <Attachments variant="inline">
+      {attachments.files.map((attachment) => (
+        <Attachment
+          data={attachment}
+          key={attachment.id}
+          onRemove={() => attachments.remove(attachment.id)}
+        >
+          <AttachmentPreview />
+          <AttachmentRemove />
+        </Attachment>
+      ))}
+    </Attachments>
+  );
 };
 
 type ChatProps = {
@@ -309,7 +338,6 @@ const ChatInner = ({ basePath, suggestions, isOpen }: ChatInnerProps) => {
                       className="text-wrap"
                       rehypePlugins={[
                         defaultRehypePlugins.raw,
-                        defaultRehypePlugins.katex,
                         [
                           harden,
                           {
@@ -360,9 +388,9 @@ const ChatInner = ({ basePath, suggestions, isOpen }: ChatInnerProps) => {
         )}
         <PromptInputProvider initialInput={localPrompt} key={providerKey}>
           <PromptInput globalDrop multiple onSubmit={handleSubmit}>
-            <PromptInputAttachments>
-              {(attachment) => <PromptInputAttachment data={attachment} />}
-            </PromptInputAttachments>
+            <PromptInputHeader>
+              <PromptInputAttachmentsDisplay />
+            </PromptInputHeader>
             <PromptInputBody>
               <PromptInputTextarea
                 maxLength={1000}
