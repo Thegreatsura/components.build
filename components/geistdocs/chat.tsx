@@ -7,9 +7,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { ChevronRightIcon, MessagesSquareIcon, Trash } from "lucide-react";
 import { Portal } from "radix-ui";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { harden } from "rehype-harden";
 import { toast } from "sonner";
-import { defaultRehypePlugins } from "streamdown";
 import type { MyUIMessage } from "@/app/api/chat/types";
 import {
   Attachment,
@@ -334,20 +332,7 @@ const ChatInner = ({ basePath, suggestions, isOpen }: ChatInnerProps) => {
                 .filter((part) => part.type === "text")
                 .map((part, index) => (
                   <MessageContent key={`${message.id}-${part.type}-${index}`}>
-                    <MessageResponse
-                      className="text-wrap"
-                      rehypePlugins={[
-                        defaultRehypePlugins.raw,
-                        [
-                          harden,
-                          {
-                            defaultOrigin:
-                              process.env
-                                .NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL,
-                          },
-                        ],
-                      ]}
-                    >
+                    <MessageResponse className="text-wrap">
                       {part.text}
                     </MessageResponse>
                   </MessageContent>
