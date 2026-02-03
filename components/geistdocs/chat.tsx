@@ -10,12 +10,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { MyUIMessage } from "@/app/api/chat/types";
 import {
-  Attachment,
-  AttachmentPreview,
-  AttachmentRemove,
-  Attachments,
-} from "@/components/ai-elements/attachments";
-import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
@@ -29,12 +23,10 @@ import {
   PromptInput,
   PromptInputBody,
   PromptInputFooter,
-  PromptInputHeader,
   type PromptInputProps,
   PromptInputProvider,
   PromptInputSubmit,
   PromptInputTextarea,
-  usePromptInputAttachments,
 } from "@/components/ai-elements/prompt-input";
 import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import { Button } from "@/components/ui/button";
@@ -141,29 +133,6 @@ export const useChatPersistence = () => {
     saveMessages,
     clearMessages,
   };
-};
-
-const PromptInputAttachmentsDisplay = () => {
-  const attachments = usePromptInputAttachments();
-
-  if (attachments.files.length === 0) {
-    return null;
-  }
-
-  return (
-    <Attachments variant="inline">
-      {attachments.files.map((attachment) => (
-        <Attachment
-          data={attachment}
-          key={attachment.id}
-          onRemove={() => attachments.remove(attachment.id)}
-        >
-          <AttachmentPreview />
-          <AttachmentRemove />
-        </Attachment>
-      ))}
-    </Attachments>
-  );
 };
 
 type ChatProps = {
@@ -372,10 +341,7 @@ const ChatInner = ({ basePath, suggestions, isOpen }: ChatInnerProps) => {
           </>
         )}
         <PromptInputProvider initialInput={localPrompt} key={providerKey}>
-          <PromptInput globalDrop multiple onSubmit={handleSubmit}>
-            <PromptInputHeader>
-              <PromptInputAttachmentsDisplay />
-            </PromptInputHeader>
+          <PromptInput onSubmit={handleSubmit}>
             <PromptInputBody>
               <PromptInputTextarea
                 maxLength={1000}
