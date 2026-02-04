@@ -1,6 +1,9 @@
-# Building Components
+---
+name: building-components
+description: Guide for building modern, accessible, and composable UI components. Use when building new components, implementing accessibility, creating composable APIs, setting up design tokens, publishing to npm/registry, or writing component documentation.
+---
 
-Guide for building modern, accessible, and composable UI components following industry best practices.
+# Building Components
 
 ## When to use this skill
 
