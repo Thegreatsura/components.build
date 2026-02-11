@@ -32,11 +32,16 @@ const proxy = (request: NextRequest, context: NextFetchEvent) => {
 
   // Handle .md/.mdx URL requests before i18n runs
   if (
-    pathname.startsWith("/") &&
+    (pathname === ".md" ||
+      pathname === ".mdx" ||
+      pathname.startsWith("/")) &&
     (pathname.endsWith(".md") || pathname.endsWith(".mdx"))
   ) {
     const stripped = pathname.replace(/\.mdx?$/, "");
-    const result = rewriteLLM(stripped);
+    const result =
+      stripped === ""
+        ? `/${i18n.defaultLanguage}/llms.mdx`
+        : rewriteLLM(stripped);
     if (result) {
       context.waitUntil(
         trackMdRequest({
