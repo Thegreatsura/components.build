@@ -8,19 +8,6 @@ const config: NextConfig = {
     turbopackFileSystemCacheForDev: true,
   },
 
-  async rewrites() {
-    return [
-      {
-        source: "/:path*.mdx",
-        destination: "/llms.mdx/:path*",
-      },
-      {
-        source: "/:path*.md",
-        destination: "/llms.mdx/:path*",
-      },
-    ];
-  },
-
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

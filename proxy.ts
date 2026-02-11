@@ -30,19 +30,24 @@ const proxy = (request: NextRequest, context: NextFetchEvent) => {
     );
   }
 
-  // Track .md/.mdx URL requests (rewrites are handled by next.config.ts)
+  // Handle .md/.mdx URL requests before i18n runs
   if (
-    pathname.startsWith("/docs/") &&
+    pathname.startsWith("/") &&
     (pathname.endsWith(".md") || pathname.endsWith(".mdx"))
   ) {
-    context.waitUntil(
-      trackMdRequest({
-        path: pathname,
-        userAgent: request.headers.get("user-agent"),
-        referer: request.headers.get("referer"),
-        acceptHeader: request.headers.get("accept"),
-      })
-    );
+    const stripped = pathname.replace(/\.mdx?$/, "");
+    const result = rewriteLLM(stripped);
+    if (result) {
+      context.waitUntil(
+        trackMdRequest({
+          path: pathname,
+          userAgent: request.headers.get("user-agent"),
+          referer: request.headers.get("referer"),
+          acceptHeader: request.headers.get("accept"),
+        })
+      );
+      return NextResponse.rewrite(new URL(result, request.nextUrl));
+    }
   }
 
   // Handle Accept header content negotiation and track the request
