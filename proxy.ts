@@ -6,16 +6,58 @@ import {
   NextResponse,
 } from "next/server";
 import { i18n } from "@/lib/geistdocs/i18n";
+import { trackMdRequest } from "@/lib/md-tracking";
 
-const { rewrite: rewriteLLM } = rewritePath("/*path", "/llms.mdx/*path");
+const { rewrite: rewriteLLM } = rewritePath(
+  "/*path",
+  `/${i18n.defaultLanguage}/llms.mdx/*path`
+);
 
 const internationalizer = createI18nMiddleware(i18n);
 
 const proxy = (request: NextRequest, context: NextFetchEvent) => {
-  // First, handle Markdown preference rewrites
+  const pathname = request.nextUrl.pathname;
+
+  // Track llms.txt requests
+  if (pathname === "/llms.txt") {
+    context.waitUntil(
+      trackMdRequest({
+        path: "/llms.txt",
+        userAgent: request.headers.get("user-agent"),
+        referer: request.headers.get("referer"),
+        acceptHeader: request.headers.get("accept"),
+      })
+    );
+  }
+
+  // Track .md/.mdx URL requests (rewrites are handled by next.config.ts)
+  if (
+    pathname.startsWith("/docs/") &&
+    (pathname.endsWith(".md") || pathname.endsWith(".mdx"))
+  ) {
+    context.waitUntil(
+      trackMdRequest({
+        path: pathname,
+        userAgent: request.headers.get("user-agent"),
+        referer: request.headers.get("referer"),
+        acceptHeader: request.headers.get("accept"),
+      })
+    );
+  }
+
+  // Handle Accept header content negotiation and track the request
   if (isMarkdownPreferred(request)) {
-    const result = rewriteLLM(request.nextUrl.pathname);
+    const result = rewriteLLM(pathname);
     if (result) {
+      context.waitUntil(
+        trackMdRequest({
+          path: pathname,
+          userAgent: request.headers.get("user-agent"),
+          referer: request.headers.get("referer"),
+          acceptHeader: request.headers.get("accept"),
+          requestType: "header-negotiated",
+        })
+      );
       return NextResponse.rewrite(new URL(result, request.nextUrl));
     }
   }
