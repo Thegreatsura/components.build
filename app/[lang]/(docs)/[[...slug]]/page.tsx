@@ -1,6 +1,8 @@
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Author } from "@/components/author";
+import { AuthorNote } from "@/components/author-note";
 import { AskAI } from "@/components/geistdocs/ask-ai";
 import { CopyPage } from "@/components/geistdocs/copy-page";
 import {
@@ -16,8 +18,6 @@ import { OpenInChat } from "@/components/geistdocs/open-in-chat";
 import { ScrollTop } from "@/components/geistdocs/scroll-top";
 import { Separator } from "@/components/ui/separator";
 import { getLLMText, getPageImage, source } from "@/lib/geistdocs/source";
-import { Author } from "@/components/author";
-import { AuthorNote } from "@/components/author-note";
 
 const Page = async ({ params }: PageProps<"/[lang]/[[...slug]]">) => {
   const { slug, lang } = await params;
@@ -78,6 +78,17 @@ export const generateMetadata = async ({
     notFound();
   }
 
+  if (!slug) {
+    return {
+      title: "Components.build",
+      description:
+        "An open standard for building modern, composable and accessible UI components.",
+      openGraph: {
+        images: getPageImage(page).url,
+      },
+    };
+  }
+
   const metadata: Metadata = {
     title: page.data.title,
     description: page.data.description,
@@ -86,7 +97,7 @@ export const generateMetadata = async ({
     },
     alternates: {
       types: {
-        "text/markdown": `/${slug}.md`,
+        "text/markdown": `/docs/${slug.join("/")}.md`,
       },
     },
   };
